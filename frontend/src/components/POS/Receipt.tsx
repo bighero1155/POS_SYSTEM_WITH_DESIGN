@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EmailForm from "../Email";
-import { useAuth } from "../../context/AuthContext"; // Adjust path if needed
+import { useAuth } from "../../context/AuthContext";
 
 interface Product {
   product_id: number;
@@ -31,9 +31,8 @@ const Receipt: React.FC<ReceiptProps> = ({
   changeDue,
 }) => {
   const navigate = useNavigate();
-  const { user } = useAuth(); // <-- get logged-in user and logout func
+  const { user } = useAuth();
 
-  // Get current date formatted as e.g. "June 9, 2025, 3:25 PM"
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleString(undefined, {
     year: "numeric",
@@ -68,7 +67,7 @@ Amount Paid: ₱${amountPaid.toFixed(2)}
 Change Due: ₱${changeDue.toFixed(2)}
 
 Thank you for your purchase!
-  `.trim();
+`.trim();
 
   const handlePrint = () => {
     const newWindow = window.open("", "_blank", "width=600,height=600");
@@ -88,6 +87,8 @@ Thank you for your purchase!
           </head>
           <body>
             <h3>Receipt</h3>
+            ${user ? user.first_name : "Guest"}<br>
+            Role: ${user ? user.role || "User" : "Guest"}
             <div class="line"><strong>Date:</strong><span>${formattedDate}</span></div>
             ${cart
               .map(
@@ -121,7 +122,7 @@ Thank you for your purchase!
             )}</span></div>
 
             <div class="footer">
-              <h4>Thank you for your purchase!</h4>
+              <h4>Thank you for your purchase! Have a great day! We appreciate your business!</h4>
             </div>
 
             <script>
@@ -140,19 +141,17 @@ Thank you for your purchase!
   };
 
   return (
-    <div>
-      {/* User info and logout */}
-
+    <div className="container mt-4">
       <h3>Receipt</h3>
       <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
         <div>
           {user ? (
             <>
               <div>
-                <strong></strong> {user ? `${user.first_name}` : "Guest"}{" "}
+                <strong>Name:</strong> {user.first_name}
               </div>
               <div>
-                <strong>Role: </strong> {user.role || "User"}
+                <strong>Role:</strong> {user.role || "User"}
               </div>
             </>
           ) : (
@@ -160,9 +159,11 @@ Thank you for your purchase!
           )}
         </div>
       </div>
+
       <div className="mb-2">
         <strong>Date:</strong> {formattedDate}
       </div>
+
       <div className="border-bottom mb-3 pb-2">
         {cart.length === 0 ? (
           <p>No items purchased.</p>
@@ -208,18 +209,18 @@ Thank you for your purchase!
         <span>₱{changeDue.toFixed(2)}</span>
       </div>
 
-      <div className="d-flex justify-content-center mb-2">
+      <div className="d-flex justify-content-center my-3">
         <h5>
           Thank you for your purchase! Have a great day! We appreciate your
           business!
         </h5>
       </div>
 
-      <div className="d-flex justify-content-center mb-2">
+      <div className="d-flex justify-content-center mb-3">
         <EmailForm defaultMessage={formattedReceipt} />
       </div>
 
-      <div className="d-flex justify-content-center mb-2">
+      <div className="d-flex justify-content-center">
         <button className="btn btn-primary me-2" onClick={handlePrint}>
           Print Receipt
         </button>
